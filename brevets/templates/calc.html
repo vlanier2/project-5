@@ -139,6 +139,31 @@
                });
             }
 
+            function handle_errors_submit(brevet_data) {
+               var previous_checkpoint_km = -1;
+               for (var index = 0; index < 20; index++) {
+                  var row = brevet_data['checkpoint_' + index];
+                  if (row['km'] !== '') {
+                     if (Number(row['km']) <= previous_checkpoint_km) {
+                        window.alert("checkpoints must be increasing");
+                        return false;
+                     }
+                     previous_checkpoint_km = Number(row['km']);
+                  }
+               }
+               if (previous_checkpoint_km === -1) {
+                  window.alert("Table is Empty!");
+                  return false;
+               }
+               var max_dist = Number(brevet_data["brevet_dist_km"]);
+               max_dist = max_dist + (max_dist * 0.20);
+               if (previous_checkpoint_km >  max_dist) {
+                  window.alert("Max brevet distance is 20% more than total");
+                  return false;
+               }
+               return true;
+            }
+
             function calc_times(control) {
             
                // start of edited code
@@ -187,7 +212,9 @@
                });
 
                console.log(brevet_data);
-               // todo handle errors
+               if (!handle_errors_submit(brevet_data)) {
+                  return;
+               }
 
                $.post({
                   url: SUBMIT_URL, 
@@ -213,6 +240,12 @@
 
                $.getJSON(DISPLAY_URL).done(
                   function(data) {
+
+                     if ($.isEmptyObject(data.result)) {
+                        window.alert("No Brevet Data Found. Did you submit anything?");
+                        return
+                     }
+
                      var brevet_dist_km = data.result.brevet_dist_km;
                      var begin_date = data.result.begin_date;
 
