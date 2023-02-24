@@ -91,12 +91,12 @@ def _insert():
 def _display():
     
     query = db.races.find_one()
-    query.pop("_id") # mongodb id object is not serializable (important for jsonify)
     app.logger.debug(f"Out MONGO DB {query}")
 
     if query is None:
         return flask.jsonify(result={})
 
+    query.pop("_id") # mongodb id object is not serializable (important for jsonify)
     return flask.jsonify(result=query)
 
 app.debug = CONFIG.DEBUG
