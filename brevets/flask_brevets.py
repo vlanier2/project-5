@@ -80,9 +80,9 @@ def _calc_times():
 @app.route("/_submit", methods=["POST"])
 def _insert():
     data = request.get_json()
-
     app.logger.debug(f"In MONGODB {data}")
 
+    # update the one race named mybrevet - upsert = create if not found
     db.races.update_one({'name' : 'mybrevet'}, {'$set' : data}, upsert=True)
 
     return flask.jsonify({'success' : True})
@@ -91,7 +91,7 @@ def _insert():
 def _display():
     
     query = db.races.find_one()
-    query.pop("_id")
+    query.pop("_id") # mongodb id object is not serializable (important for jsonify)
     app.logger.debug(f"Out MONGO DB {query}")
 
     if query is None:
