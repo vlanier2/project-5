@@ -167,8 +167,8 @@
                      'miles'     : $(this).find('input[name="miles"]').val(),
                      'km'        : $(this).find('input[name="km"]').val(),
                      'location'  : $(this).find('input[name="location"]').val(),
-                     'open'        : $(this).find('input[name="open"]').val(),
-                     'close'        : $(this).find('input[name="close"]').val(),
+                     'open'      : $(this).find('input[name="open"]').val(),
+                     'close'     : $(this).find('input[name="close"]').val(),
                      'notes'     : $(this).find('.notes').val()
                   }
                });
@@ -195,6 +195,32 @@
 
             function get_brevet_from_db() {
                console.log('pull');
+
+               $.getJSON(DISPLAY_URL).done(
+                  function(data) {
+                     var brevet_dist_km = data.result.brevet_dist_km;
+                     var begin_date = data.result.begin_date;
+
+                     console.log("response from display");
+                     console.log(data.result);
+
+
+                     $('#begin_date').val(begin_date);
+                     $('#brevet_dist_km').val(brevet_dist_km);
+                     
+                     var checkpoint_id = 0;
+                     // $('.control').each(function(index) {
+                     //    brevet_data['checkpoint_' + index] = {
+                     //       'miles'     : $(this).find('input[name="miles"]').val(),
+                     //       'km'        : $(this).find('input[name="km"]').val(),
+                     //       'location'  : $(this).find('input[name="location"]').val(),
+                     //       'open'      : $(this).find('input[name="open"]').val(),
+                     //       'close'     : $(this).find('input[name="close"]').val(),
+                     //       'notes'     : $(this).find('.notes').val()
+                     //    }
+                     // });
+                  }
+               );
             }
 
             $(document).ready(function(){

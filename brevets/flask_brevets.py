@@ -81,14 +81,23 @@ def _calc_times():
 def _insert():
     data = request.get_json()
 
-    app.logger.debug(f"DATA {data}")
+    app.logger.debug(f"In MONGODB {data}")
+
+    db.races.update_one({'name' : 'mybrevet'}, {'$set' : data}, upsert=True)
 
     return flask.jsonify({'success' : True})
 
 @app.route("/_display")
 def _display():
-    pass
+    
+    query = db.races.find_one()
+    query.pop("_id")
+    app.logger.debug(f"Out MONGO DB {query}")
 
+    if query is None:
+        return flask.jsonify(result={})
+
+    return flask.jsonify(result=query)
 
 app.debug = CONFIG.DEBUG
 if app.debug:
