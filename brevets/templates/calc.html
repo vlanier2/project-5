@@ -125,6 +125,20 @@
             var SUBMIT_URL = SCRIPT_ROOT + "/_submit";
             var DISPLAY_URL = SCRIPT_ROOT + "/_display";
 
+            function clear_form() {
+               $('#begin_date').val("2021-01-01T00:00");
+               $('#brevet_dist_km').val('200');
+
+               $('.control').each(function(index) {
+                  $(this).find('input[name="miles"]').val(''),
+                  $(this).find('input[name="km"]').val(''),
+                  $(this).find('input[name="location"]').val(''),
+                  $(this).find('input[name="open"]').val(''),
+                  $(this).find('input[name="close"]').val(''),
+                  $(this).find('.notes').val('')
+               });
+            }
+
             function calc_times(control) {
             
                // start of edited code
@@ -190,6 +204,8 @@
                      console.log(err.status);
                   }
                });
+
+               clear_form();
             }
 
             function get_brevet_from_db() {
