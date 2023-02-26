@@ -6,22 +6,17 @@ Replacement for RUSA ACP brevet time calculator
 
 import flask
 from flask import request
-from pymongo import MongoClient
 import arrow  # Replacement for datetime, based on moment.js
 import acp_times  # Brevet time calculations
+import brevets_db
 import config
 import logging
-import os
 
 ###
 # Globals
 ###
 app = flask.Flask(__name__)
-
 CONFIG = config.configuration()
-
-client = MongoClient('mongodb://' + os.environ['MONGODB_HOSTNAME'], 27017)
-db = client.brevets
 
 ###
 # Pages
@@ -81,22 +76,19 @@ def _calc_times():
 def _insert():
     data = request.get_json()
     app.logger.debug(f"In MONGODB {data}")
-
-    # update the one race named mybrevet - upsert = create if not found
-    db.races.update_one({'name' : 'mybrevet'}, {'$set' : data}, upsert=True)
+    brevets_db.insert(data)
 
     return flask.jsonify({'success' : True})
 
 @app.route("/_display")
 def _display():
     
-    query = db.races.find_one()
+    query = brevets_db.display()
     app.logger.debug(f"Out MONGO DB {query}")
 
-    if query is None:
+    if query == {}:
         return flask.jsonify(result={})
 
-    query.pop("_id") # mongodb id object is not serializable (important for jsonify)
     return flask.jsonify(result=query)
 
 app.debug = CONFIG.DEBUG

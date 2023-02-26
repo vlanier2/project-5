@@ -125,6 +125,7 @@
             var SUBMIT_URL = SCRIPT_ROOT + "/_submit";
             var DISPLAY_URL = SCRIPT_ROOT + "/_display";
 
+            // clears the table after submissiob
             function clear_form() {
                $('#begin_date').val("2021-01-01T00:00");
                $('#brevet_dist_km').val('200');
@@ -139,6 +140,12 @@
                });
             }
 
+            // handles errors for submit button
+            // 4 error cases total
+            // - table is empty
+            // - checkpoints not increasing
+            // - final checkpoint is more than 120% of brevet distance
+            // - no data found in DB (handled in display function)
             function handle_errors_submit(brevet_data) {
                var previous_checkpoint_km = -1;
                for (var index = 0; index < 20; index++) {
@@ -165,8 +172,7 @@
             }
 
             function calc_times(control) {
-            
-               // start of edited code
+
                // get distance and start time
                var brevet_length = $('#brevet_dist_km').val();
                var begin_date = $('#begin_date').val();
