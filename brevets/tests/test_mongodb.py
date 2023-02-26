@@ -6,16 +6,9 @@ Write your tests HERE AND ONLY HERE.
 
 import nose    # Testing framework
 import logging
-from pymongo import MongoClient
-import os
 import copy
+import brevets_db
 
-logging.basicConfig(format='%(levelname)s:%(message)s',
-                    level=logging.DEBUG)
-log = logging.getLogger(__name__)
-
-client = MongoClient('mongodb://' + os.environ['MONGODB_HOSTNAME'], 27017)
-db = client.brevets
 
 def test_brevet_1():
 
@@ -45,9 +38,8 @@ def test_brevet_1():
     brevet_1_out = copy.deepcopy(brevet_1_in)
     brevet_1_out['name'] = 'mybrevet'
 
-    db.races.update_one({'name': 'mybrevet'}, {'$set': brevet_1_in}, upsert=True)
-    query = db.races.find_one()
-    query.pop("_id")
+    brevets_db.insert(brevet_1_in)
+    query = brevets_db.display()
     assert(query == brevet_1_out)
 
 def test_brevet_2():
@@ -78,7 +70,6 @@ def test_brevet_2():
     brevet_2_out = copy.deepcopy(brevet_2_in)
     brevet_2_out['name'] = 'mybrevet' 
     
-    db.races.update_one({'name': 'mybrevet'}, {'$set': brevet_2_in}, upsert=True)
-    query = db.races.find_one()
-    query.pop("_id")
+    brevets_db.insert(brevet_2_in)
+    query = brevets_db.display()
     assert(query == brevet_2_out)
